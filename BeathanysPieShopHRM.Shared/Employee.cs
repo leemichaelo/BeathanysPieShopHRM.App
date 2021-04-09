@@ -33,10 +33,9 @@ namespace BethanysPieShopHRM.Shared
         public MaritalStatus MaritalStatus { get; set; }
         public Gender Gender { get; set; }
 
-        [Required]
-        [StringLength(50, ErrorMessage = "First name is too long. can't exceed 1,000 characters.")]
-        
+        [StringLength(50, ErrorMessage = "First name is too long. can't exceed 1,000 characters.")]      
         public string Comment { get; set; }
+
         public DateTime? JoinedDate { get; set; }
         public DateTime? ExitDate { get; set; }
         public int JobCategoryId { get; set; }
