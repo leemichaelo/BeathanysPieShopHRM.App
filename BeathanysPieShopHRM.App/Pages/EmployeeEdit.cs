@@ -13,6 +13,7 @@ namespace BeathanysPieShopHRM.App.Pages
     public partial class EmployeeEdit
     {
         private IReadOnlyList<IBrowserFile> selectedFiles;
+        private ElementReference FirstNameInput;
 
         //used to store state of screen
         protected string Message = string.Empty;
@@ -33,7 +34,9 @@ namespace BeathanysPieShopHRM.App.Pages
 
         public Employee Employee { get; set; } = new Employee();
         public List<Country> Countries { get; set; } = new List<Country>();
-        public List<JobCategory> JobCategories { get; set; } = new List<JobCategory>();    
+        public List<JobCategory> JobCategories { get; set; } = new List<JobCategory>(); 
+        
+        protected async override Task OnAfterRenderAsync(bool firstRender) => await FirstNameInput.FocusAsync();
 
         protected async override Task OnInitializedAsync()
         {

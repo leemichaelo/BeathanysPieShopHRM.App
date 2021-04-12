@@ -19,7 +19,8 @@
 
             <div class="form-group row">
                 <label for="firstName" class="col-sm-3">First Name: </label>
-                <InputText id="firstName" class="form-control col-sm-8" @bind-Value="@Employee.FirstName" placeholder="Enter first name"></InputText>
+                @*<InputText id="firstName" class="form-control col-sm-8" @bind-Value="@Employee.FirstName" placeholder="Enter first name"></InputText>*@
+                <input @ref="FirstNameInput" id="firstName" class="form-control col-sm-8" @bind="@Employee.FirstName" placeholder="Enter first name"/> 
                 <ValidationMessage class="offset-sm-3 col-sm-8" For="@(() => Employee.FirstName)" />
             </div>
 
