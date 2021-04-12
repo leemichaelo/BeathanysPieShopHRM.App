@@ -1,8 +1,10 @@
 ﻿using BeathanysPieShopHRM.App.Services;
 using BethanysPieShopHRM.Shared;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +12,13 @@ namespace BeathanysPieShopHRM.App.Pages
 {
     public partial class EmployeeEdit
     {
+        private IReadOnlyList<IBrowserFile> selectedFiles;
+
+        //used to store state of screen
+        protected string Message = string.Empty;
+        protected string StatusClass = string.Empty;
+        protected bool Saved;
+
         [Inject]
         public IEmployeeDataService EmployeeDataService { get; set; }
         [Inject]
@@ -24,12 +33,7 @@ namespace BeathanysPieShopHRM.App.Pages
 
         public Employee Employee { get; set; } = new Employee();
         public List<Country> Countries { get; set; } = new List<Country>();
-        public List<JobCategory> JobCategories { get; set; } = new List<JobCategory>();
-
-        //used to store state of screen
-        protected string Message = string.Empty;
-        protected string StatusClass = string.Empty;
-        protected bool Saved;
+        public List<JobCategory> JobCategories { get; set; } = new List<JobCategory>();    
 
         protected async override Task OnInitializedAsync()
         {
@@ -37,7 +41,7 @@ namespace BeathanysPieShopHRM.App.Pages
             Countries = (await CountryDataService.GetAllCountries()).ToList();
             JobCategories = (await JobCategoryDataService.GetJobCategories()).ToList();
 
-            int.TryParse(EmployeeId, out var employeeId);
+            _ = int.TryParse(EmployeeId, out var employeeId);
 
             if (employeeId == 0) //new employee is being created
             {
@@ -49,12 +53,31 @@ namespace BeathanysPieShopHRM.App.Pages
             }
         }
 
+        private void OnInputFileChange(InputFileChangeEventArgs e)
+        {
+            selectedFiles = e.GetMultipleFiles();
+            Message = $"{selectedFiles.Count} file(s) selected";
+            StateHasChanged();
+        }
+
         protected async Task HandleValidSubmit()
         {
             Saved = false;
 
             if (Employee.EmployeeId == 0) //new
             {
+                if (selectedFiles != null)//take first image
+                {
+                    var file = selectedFiles[0];
+                    Stream stream = file.OpenReadStream();
+                    MemoryStream ms = new();
+                    await stream.CopyToAsync(ms);
+                    stream.Close();
+
+                    Employee.ImageName = file.Name;
+                    Employee.ImageContent = ms.ToArray();
+                }
+
                 var addedEmployee = await EmployeeDataService.AddEmployee(Employee);
 
                 if (addedEmployee != null)

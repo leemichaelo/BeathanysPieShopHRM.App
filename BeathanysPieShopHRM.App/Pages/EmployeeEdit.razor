@@ -9,8 +9,13 @@
         <h1 class="page-title">Details for @Employee.FirstName @Employee.LastName</h1>
 
         <EditForm Model="@Employee" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
-            <DataAnnotationsValidator/>
+            <DataAnnotationsValidator />
             <ValidationSummary></ValidationSummary>
+
+            <div class="form-group row">
+                <label for="image" class="col-sm-3">Select Image: </label>
+                <InputFile OnChange="OnInputFileChange" multiple></InputFile>
+            </div>
 
             <div class="form-group row">
                 <label for="firstName" class="col-sm-3">First Name: </label>
@@ -93,12 +98,16 @@
             </div>
 
             <div class="form-group row">
-                <label for="gender" class="col-sm-3">Gender: </label>
-                <InputSelect id="gender" class="form-control col-sm-8" @bind-Value="@Employee.Gender">
-                    <option value="@Gender.Male">Male</option>
-                    <option value="@Gender.Female">Female</option>
-                    <option value="@Gender.Other">Other</option>
-                </InputSelect>
+                <InputRadioGroup Name="genderRadioGroup" @bind-Value="@Employee.Gender">
+                    <label for="gender" class="col-sm-3">Gender: </label>
+                    <br />
+                    @foreach (var gender in (Gender[])Enum.GetValues(typeof(Gender)))
+                     {
+                        <InputRadio Name="genderRadioGroup" Value="gender" />
+                        @gender
+                        <br /><br />
+                     }
+                </InputRadioGroup>
             </div>
 
             <div class="form-group row">
@@ -128,12 +137,12 @@
 
             <button type="submit" class="btn btn-primary edit-btn">Save Employee</button>
 
-            @if(Employee.EmployeeId > 0)
-             {
+            @if (Employee.EmployeeId > 0)
+            {
                 <a class="btn btn-danger" @onclick="@DeleteEmployee">
                     Delete
                 </a>
-             }
+            }
 
             <a class="btn btn-outline-primary" @onclick="@NavigateToOverview">Back to overview</a>
         </EditForm>
